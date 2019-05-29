@@ -1,0 +1,34 @@
+package com.itheima.mapper;
+
+
+import com.itheima.pojo.TbBrand;
+import com.itheima.pojo.TbBrandExample;
+
+import java.util.List;
+
+public interface TbBrandMapper {
+
+
+    /*删除 */
+    int deleteByPrimaryKey(Long id);
+
+    /*添加*/
+    void insert(TbBrand record);
+
+    /*查询所有*/
+    List<TbBrand> selectByExample(TbBrandExample example);
+
+    /*根据id查询*/
+    TbBrand selectByPrimaryKey(Long id);
+
+    /*修改*/
+    void updateByPrimaryKey(TbBrand record);
+
+    //int updateByExampleSelective(@Param("record") TbBrand record, @Param("example") TbBrandExample example);
+
+    //int updateByPrimaryKeySelective(TbBrand record);
+
+    //int updateByExample(@Param("record") TbBrand record, @Param("example") TbBrandExample example);
+
+    //List<Map> selectOptionList();
+}
