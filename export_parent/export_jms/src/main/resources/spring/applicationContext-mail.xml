@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       					   http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/context
+       					   http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 指定引入其他资源文件.properties文件 -->
+    <context:property-placeholder location="classpath:properties/mail.properties"/>
+
+    <!-- 配置简单邮件消息对象 -->
+    <bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage">
+        <!-- 此时我们只需要注入发件箱名称即可。不要注入主题,正文,收件箱等等信息，因为那些信息是不固定的 -->
+        <property name="from" value="${mail.from}"></property>
+    </bean>
+
+    <!-- 配置邮件发送器 -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}"></property>
+        <property name="username" value="${mail.username}"></property>
+        <property name="password" value="${mail.password}"></property>
+        <property name="defaultEncoding" value="${mail.encoding}"></property>
+        <property name="protocol" value="${mail.protocol}"></property>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop><!-- 是否需要验证 -->
+                <prop key="mail.debug">true</prop><!-- 是否需要debug的信息 -->
+                <prop key="mail.smtp.timeout">0</prop><!-- 设置发送超时时间，以秒为单位。0为永不超时 -->
+            </props>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
+    <!--配置spring创建容器时要扫描的包-->
+    <context:component-scan base-package="com.itheima.listener"></context:component-scan>
+
+    <!--配置连接工厂：ActiveMQ的连接工厂-->
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="tcp://127.0.0.1:61616" userName="admin" password="admin"></amq:connectionFactory>
+
+    <!--配置spring支持会话缓存的连接工厂-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <!--注入提供商的连接工厂-->
+        <property name="targetConnectionFactory" ref="amqConnectionFactory"></property>
+        <!--设置Session缓存的大小-->
+        <property name="sessionCacheSize" value="100"></property>
+    </bean>
+
+    <!--配置生产消费模型的监听器
+    <jms:listener-container destination-type="queue">
+        <jms:listener destination="spring-queue" ref="queueListener"></jms:listener>
+    </jms:listener-container>-->
+
+    <!--配置发布订阅模型的监听器
+    <jms:listener-container destination-type="topic">
+        <jms:listener destination="spring-topic" ref="topicListener"></jms:listener>
+    </jms:listener-container>-->
+
+    <jms:listener-container destination-type="queue">
+        <jms:listener destination="export-queue" ref="emailListener"></jms:listener>
+    </jms:listener-container>
+</beans>

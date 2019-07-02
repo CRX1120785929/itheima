@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
+    <!--配置连接工厂：ActiveMQ的连接工厂-->
+    <amq:connectionFactory id="amqConnectionFactory" brokerURL="tcp://127.0.0.1:61616" userName="admin" password="admin"></amq:connectionFactory>
+
+    <!--配置spring支持会话缓存的连接工厂-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <!--注入提供商的连接工厂-->
+        <property name="targetConnectionFactory" ref="amqConnectionFactory"></property>
+        <!--设置Session缓存的大小-->
+        <property name="sessionCacheSize" value="100"></property>
+    </bean>
+
+    <!--配置spring提供的jms模板-->
+    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!--注入连接工厂，是spring的-->
+        <property name="connectionFactory" ref="connectionFactory"></property>
+        <!--指定是否发布订阅模型-->
+        <property name="pubSubDomain" value="false"></property>
+    </bean>
+
+    <!--配置spring提供的jms模板-->
+    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!--注入连接工厂，是spring的-->
+        <property name="connectionFactory" ref="connectionFactory"></property>
+        <!--指定是否发布订阅模型-->
+        <property name="pubSubDomain" value="true"></property>
+    </bean>
+</beans>
